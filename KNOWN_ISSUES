@@ -1,0 +1,18 @@
+A list of known issues for alpha release:
+
+
+These are all currently being worked on:
+ > HTTPS Interception isn't working
+ > Proxy is a little slow, good luck with many many clients
+ > BEeF is slow, again, good luck
+
+These are also being worked on as features:
+ > Tweakable attack agressiveness
+ > Automated payloads
+
+Stuff I'm not really working on yet:
+ > Security*
+
+
+* It's a security product meant for testing -- if you're using this in an environment you might get counter-attacked in, you'll want to change the default MSFRPC Password I set: pi/raspberry
+

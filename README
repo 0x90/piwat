@@ -1,0 +1,60 @@
+#!/bin/usr
+
+==========
+TL; DR:
+==========
+ > RasPi mem at 224/32 split
+ > Bootup times are slow, I know
+ > Install tmux and udhcpd
+ > Twitter: @crypt0s
+
+    ############################
+    #        DISCLAIMER        #
+    ############################
+
+ > You're running an ALPHA version
+ > This is a collection of software -- not all bugs are mine
+ > Please document all bugs with me anyways
+ > This was only tested on Raspian Image
+
+
+    ############################
+    #    H/W   Requirements    #
+    ############################
+
+These are more suggestions, but it's what I used for this project.
+Bill of materials probably won't exceed $250 USD
+ 
+ > Belkin Powered USB HUB (Walmart has these)
+ > ALFA Networks USB Wifi
+ > Energizer XPAL 1800 Laptop Battery Pack
+ > RaspberryPi Model B (256MB or 512MB)
+ > RasPi configured for at least a 224/32 MB CPU/GPU RAM split
+ > Internet Connection (like through cellular telephone)
+
+
+    #############################
+    #     S/W  Requirements     #
+    #############################
+
+ > udhcpd
+ > I give you precompiled everything else
+
+
+    #############################
+    #         How To Use        #
+    #############################
+
+ > Connect Pi to internet source
+ > Execute the start.sh script in the "Attack" folder in /opt
+ > Wait for victims
+ > Rickroll innocents
+
+
+    #############################
+    #      Additional Notes     #
+    #############################
+
+ > MSFRPC user/pass is pi/raspberry by default
+ > Not everything is up to date -- deal with it(tm)
+

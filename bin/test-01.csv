@@ -1,0 +1,12 @@
+
+BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
+00:16:B6:25:E6:1B, 2013-04-27 15:30:16, 2013-04-27 15:30:17,  6,  54, WPA , TKIP,PSK, -69,        2,        0,   0.  0.  0.  0,   6, Laanta, 
+00:26:62:DA:DB:F9, 2013-04-27 15:30:13, 2013-04-27 15:30:17,  1,  54, WPA2WPA , CCMP TKIP,PSK, -52,        4,        0,   0.  0.  0.  0,   5, 09FJ8, 
+00:26:62:4D:70:E8, 2013-04-27 15:30:16, 2013-04-27 15:30:16,  6,  54, WEP , WEP,   , -44,        1,       30,   0.  0.  0.  0,   5, Z0S03, 
+00:7F:28:19:CB:8E, 2013-04-27 15:30:16, 2013-04-27 15:30:17,  6,  54, WPA2, CCMP,PSK, -34,        3,        0,   0.  0.  0.  0,   5, D5CF4, 
+00:1F:90:ED:AB:53, 2013-04-27 15:30:16, 2013-04-27 15:30:16, 11,  54, WEP , WEP,   , -30,        3,        0,   0.  0.  0.  0,   5, GU572, 
+30:46:9A:8E:BF:A9, 2013-04-27 15:30:16, 2013-04-27 15:30:16, 11,  54, WPA2, CCMP,PSK, -16,        3,        1,   0.  0.  0.  0,  11, POOP-DOLLAH, 
+
+Station MAC, First time seen, Last time seen, Power, # packets, BSSID, Probed ESSIDs
+7C:1E:52:12:76:B4, 2013-04-27 15:30:16, 2013-04-27 15:30:16, -44,       35, 00:26:62:4D:70:E8,
+

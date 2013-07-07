@@ -1,17 +1,7 @@
 #
-#   Copyright 2012 Wade Alcorn wade@bindshell.net
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+# Copyright (c) 2006-2013 Wade Alcorn - wade@bindshell.net
+# Browser Exploitation Framework (BeEF) - http://beefproject.com
+# See the file 'doc/COPYING' for copying permission
 #
 
 module BeEF
@@ -80,6 +70,7 @@ module BeEF
         #    "template": "default",
         #    "subject": "Hi from BeEF",
         #    "fromname": "BeEF",
+        #    "fromaddr": "beef@beef.com",
         #    "link": "http://www.microsoft.com/security/online-privacy/phishing-symptoms.aspx",
         #    "linktext": "http://beefproject.com",
         #    "recipients": [{
@@ -95,10 +86,11 @@ module BeEF
             template = body["template"]
             subject = body["subject"]
             fromname = body["fromname"]
+            fromaddr = body["fromaddr"]
             link = body["link"]
             linktext = body["linktext"]
 
-            if template.nil? || subject.nil? || fromname.nil? || link.nil? || linktext.nil?
+            if template.nil? || subject.nil? || fromaddr.nil? || fromname.nil? || link.nil? || linktext.nil?
               print_error "All parameters are mandatory."
               halt 401
             end
@@ -116,11 +108,16 @@ module BeEF
                 halt 401
               end
             end
-
-          mass_mailer = BeEF::Extension::SocialEngineering::MassMailer.instance
-          mass_mailer.send_email(template, fromname, subject, link, linktext, recipients)
           rescue Exception => e
-            print_error "Invalid JSON input passed to endpoint /api/seng/clone_page"
+            print_error "Invalid JSON input passed to endpoint /api/seng/send_emails"
+            error 400
+          end
+
+          begin
+            mass_mailer = BeEF::Extension::SocialEngineering::MassMailer.instance
+            mass_mailer.send_email(template, fromname, fromaddr, subject, link, linktext, recipients)
+          rescue Exception => e
+            print_error "Invalid mailer configuration"
             error 400
           end
         end

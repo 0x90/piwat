@@ -1,18 +1,9 @@
 //
-//   Copyright 2012 Wade Alcorn wade@bindshell.net
+// Copyright (c) 2006-2013 Wade Alcorn - wade@bindshell.net
+// Browser Exploitation Framework (BeEF) - http://beefproject.com
+// See the file 'doc/COPYING' for copying permission
 //
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
-//
-//       http://www.apache.org/licenses/LICENSE-2.0
-//
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
-//
+
 var zombie_execute_button_text = 'Execute'
 var zombie_reexecute_button_text = 'Re-execute'
 var re_execute_command_title = 'Re-execute command'
@@ -258,12 +249,24 @@ function genExistingExploitPanel(panel, command_id, zombie, sb) {
 							html = String.format("<div style='color:#385F95;text-align:right;'>{0}</div>", value);
 							html += '<p>';
 							for(index in record.data.data) {
-								result = record.data.data[index];
+								result = $jEncoder.encoder.encodeForHTML(record.data.data[index]).replace(/&lt;br&gt;/g,'<br>');
 								index = index.toString().replace('_', ' ');
-                                //output escape everything, but allow the <br> tag for better rendering.
-								html += String.format('<b>{0}</b>: {1}<br>', index, $jEncoder.encoder.encodeForHTML(result).replace(/&lt;br&gt;/g,'<br>'));
+								// Check if the data is the image parameter and that it's a base64 encoded png.
+								if (result.substring(0,28) == "image=data:image/png;base64,") {
+									// Lets display the image
+									try {
+										base64_data = window.atob(result.substring(29,result.length));
+										html += String.format('<img src="{0}" /><br>', result.substring(6));
+									} catch(e) {
+										beef.debug("Received invalid base64 encoded image string: "+e.toString());
+										html += String.format('<b>{0}</b>: {1}<br>', index, result);
+									}
+								} else {
+									// output escape everything, but allow the <br> tag for better rendering.
+									html += String.format('<b>{0}</b>: {1}<br>', index, result);
+								}
 							}
-							
+
 							html += '</p>';
 							return html;
 						}

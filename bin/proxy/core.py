@@ -205,7 +205,7 @@ class ProxyHandler(SocketServer.StreamRequestHandler):
                 return
 
         # Switch to new socket
-        self.peer    = True
+        #self.peer    = True
         self.request = socket_ssl
 
         self.setup()

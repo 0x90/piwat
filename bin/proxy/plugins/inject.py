@@ -6,7 +6,7 @@ from cStringIO import StringIO
 from gzip import GzipFile
 
 #TODO: The UTF-8 encoding might not be 101% kosher all the time
-#TODO: Change this to automatically know what our IP address is so its never wrong
+#TODO: configure injecting url to be whatever user wants.
 def proxy_mangle_response(res):
     v = res.getHeader("Content-Type")
     print res.getHeader("Content-Encoding")

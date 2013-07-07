@@ -1,91 +1,55 @@
 #!/bin/bash
+echo "This takes forever and shouldn't be interrupted.  Continue?"
+echo "Press any key..."
+read test
 
-echo "This is going to take like 30 minutes and will not require user input after you press enter at the prompt"
-echo "!!!!!!!!!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!!!"
-echo " > This will change the default cpu/gpu memory split on your raspberry pi!"
-echo " > This could cause graphics-intensive operations to suck."
-echo " > This software package will not work without this change."
-echo " > This script will replace python-libpcap with python-pypcap."
+echo "Installing some pre-reqs from repos."
+apt-get --ignore-missing install -y build-essential udhcpd tmux byobu ettercap proxychains python-dev python-pypcap subversion git nano vim libnl-3-200 libnl-dev libnl-nf libnl-utils libnl-genl-3-200 ruby ruby-dev sqlite3 libsqlite3-dev libsqlite3-ruby-1.9.1
+echo "Downloading Pylibpcap"
+wget -O pylibpcap.tar.gz https://downloads.sourceforge.net/project/pylibpcap/pylibpcap/0.6.4/pylibpcap-0.6.4.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fpylibpcap%2Ffiles%2Fpylibpcap%2F&ts=1372734756&use_mirror=iweb
+echo "Unpacking Install files..."
+tar xvf pylibpcap.tar.gz
+cd pylibpcap-0.6.4/
+echo "Installing"
+python setup.py install
+cd ../
 
-##############
-#Configure Pi#
-##############
-echo "!!!!running beef and metasploit requires at least a 224/32 MB split!!!!"
-echo "IF YOU PRESS \"Y\" YOU WILL BE CHANGING YOUR DEFAULT SPLIT TO 224/32"
-echo "IF YOU HAVE A 512 MB PI, YOU MAY NOT NEED TO DO THIS."
-echo ""
-echo "press enter key to continue"
-echo ""
+echo "Downloading Lorcon"
+git clone https://code.google.com/p/lorcon/
+cd lorcon
+echo "Starting install"
+./configure
+make
+make install
+echo "Finished Lorcon install, installing pyLorcon2"
+cd pylorcon2
+python setup.py install
+echo "*******************************************************************"
+echo "***************TEST LORCON/PYLORCON ON YOUR OWN NOW****************"
+pwd
+echo "*******************************************************************"
 
-read nothing
+cd ../../
+echo "Downloading Hostapd-Karma"
+wget -O hostapd.tar.bz2 http://www.digininja.org/files/hostapd-1.0-karma.tar.bz2
+echo "Unpacking"
+tar xvf hostapd.tar.bz2
+cd hostapd-1.0-karma/hostapd/
+echo "Building"
+make hostapd
+echo "Installing"
+cp hostapd ../../../bin/hostapd
+cd ../../
 
-echo "Adjusting Memsplit"
-mv /boot/config.txt /boot/config.txt.old
-cp ../conf/config.txt /boot/config.txt
+echo "Downloading airdrop2"
+git clone https://code.google.com/p/airdrop2/
+cd airdrop2
+echo "Installing airdrop"
+cp airdrop-immunizer.py ../../bin/airdrop-immunizer.py
+cd ../
+cp -r airdrop2/ ../bin/airdrop-immunizer.py
 
-# The old way
-#mv /boot/start.elf /boot/start.elf.old
-#cp lib/arm224_start.elf /boot/start.elf
-
-######################
-#Aircrack/dump/things#
-######################
-echo "Installing precompiled aircrack libs/bins to save time"
-cp lib/PyLorcon2.so /usr/lib/python2.7/PyLorcon2.so
-cp lib/pylorcon.so /usr/lib/python2.7/pylorcon.so
-cp lib/liborcon-1.0.0.so /usr/local/lib/liborcon.so
-cp lib/liborcon2-2.0.0.so /usr/local/lib/liborcon2.so
-cp lib/liborcon* /usr/local/lib/
-
-###############################
-#Install py80211, thx tehxile!#
-###############################
-#lib/py80211/setup.py config
-#lib/py80211/setup.py install
-
-#####################
-#Install easy things#
-#####################
-echo "Updating package repositories"
-apt-get update
-echo "Installing packages"
-apt-get --ignore-missing install -y build-essential udhcpd tmux byobu ettercap proxychains python-pypcap subversion git nano vim libnl1 ruby ruby-dev libsqlite3-dev
-echo "Finished installing packages"
-
-#this is stuff for beef
-# I have edited the bundler gemfile junk to take the version of eventmachine that works on the raspi
-# This took forever and I would reccomend fucking with it if you get stuck booting up beef
-# Report this as a bug if it happens though
-echo "Installing beef things"
+echo "Installing some BEEF deps"
 gem install bundler
 cd ../bin/beef/
 bundle install
-cd ../../install/
-
-#enable the dhcpd stuff.
-cp conf/udhcpd.default /etc/default/udhcpd
-
-#get the right version of pylibpcap (according to documentation from Textile)
-# Todo: download most things directly from source and compile or use (like beef/msf)
-#pylibpcap airdrop2 dependancy
-git clone https://github.com/signed0/pylibpcap.git
-cd pylibpcap/
-python setup.py install
-cd ../
-
-#py80211 tools (hey, i helped write that!)
-git clone https://code.google.com/p/py80211/
-cd py80211/
-python setup.py install
-cd ../
-
-#Airdrop (hey, this too!)
-git clone https://code.google.com/p/airdrop2/
-cd airdrop2
-python setup.py install
-cd ../
-
-
-echo ""
-echo "!!!!!!!!If you had a bunch of bundler/ruby/gem errors just now, file a bug report!!!!!!!"
-echo ""

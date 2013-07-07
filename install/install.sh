@@ -38,16 +38,16 @@ cd hostapd-1.0-karma/hostapd/
 echo "Building"
 make hostapd
 echo "Installing"
-cp hostapd ../../../bin/hostapd
+mv hostapd ../../../bin/hostapd
 cd ../../
 
 echo "Downloading airdrop2"
 git clone https://code.google.com/p/airdrop2/
 cd airdrop2
 echo "Installing airdrop"
-cp airdrop-immunizer.py ../../bin/airdrop-immunizer.py
+mv airdrop-immunizer.py ../../bin/airdrop-immunizer.py
 cd ../
-cp -r airdrop2/ ../bin/airdrop-immunizer.py
+mv airdrop2/ ../bin/airdrop-immunizer.py
 
 echo "Installing some BEEF deps"
 gem install bundler

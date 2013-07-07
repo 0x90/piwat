@@ -1,60 +1,41 @@
-#!/bin/usr
+#!/usr
 
-==========
-TL; DR:
-==========
- > RasPi mem at 224/32 split
- > Bootup times are slow, I know
- > Install tmux and udhcpd
- > Twitter: @crypt0s
+==============================================
+========Wireless Attack Toolkit (WAT?)========
+==============================================
 
-    ############################
-    #        DISCLAIMER        #
-    ############################
+Misc Notes:
+    This software package installs on Debian-based systems with decent repos.
+    Tested on Kali Linux and Raspbian
 
- > You're running an ALPHA version
- > This is a collection of software -- not all bugs are mine
- > Please document all bugs with me anyways
- > This was only tested on Raspian Image
+Hardware:
+    This software package works on RasperryPi Model B 512MB version. It can take some time to start up.  This is known and by design.
+    Obstensiby, this could be installed on any Debian ARMv7 HW with >=512MB 
 
+Install Process:
+     * Before starting this, make sure your pi is connected to the internet
+     * Also make sure you are ready to install and compile for a few hours.
 
-    ############################
-    #    H/W   Requirements    #
-    ############################
+    Step 1:
+     Go to the install folder and run the install script.
+     The script will download, install, and compile packages for possbily several hours.  This was done in order to provide the best end experience and up-to-date packages without relying on repo managers.
 
-These are more suggestions, but it's what I used for this project.
-Bill of materials probably won't exceed $250 USD
- 
- > Belkin Powered USB HUB (Walmart has these)
- > ALFA Networks USB Wifi
- > Energizer XPAL 1800 Laptop Battery Pack
- > RaspberryPi Model B (256MB or 512MB)
- > RasPi configured for at least a 224/32 MB CPU/GPU RAM split
- > Internet Connection (like through cellular telephone)
+    Step 2:
+      Test out the software and make sure everything installed correctly by running the test script in the installer folder
+
+    Step 3 (optional):
+      If the test script didn't work, then let @crypt0s know on twitter or file a bug please.
 
 
-    #############################
-    #     S/W  Requirements     #
-    #############################
-
- > udhcpd
- > I give you precompiled everything else
+Running The Software:
+    Run start.sh found in the root of the install directory
+    Follow the instructions found in there.
 
 
-    #############################
-    #         How To Use        #
-    #############################
-
- > Connect Pi to internet source
- > Execute the start.sh script in the "Attack" folder in /opt
- > Wait for victims
- > Rickroll innocents
+Thank-You:
+    Tex1le - Airdrop/py80211
+    Dakahuna - Wireless Village
+    ZeroChaos - Wireless junk
 
 
-    #############################
-    #      Additional Notes     #
-    #############################
-
- > MSFRPC user/pass is pi/raspberry by default
- > Not everything is up to date -- deal with it(tm)
 

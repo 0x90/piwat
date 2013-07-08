@@ -52,6 +52,8 @@ cd ../../
 echo "Downloading airdrop2"
 git clone https://code.google.com/p/airdrop2/
 cd airdrop2
+echo "Switching to Wifiobjects"
+git checkout wifiobjects
 echo "Installing airdrop"
 mv airdrop-immunizer.py ../../bin/airdrop-immunizer.py
 cd ../

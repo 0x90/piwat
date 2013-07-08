@@ -6,7 +6,7 @@ read test
 echo "Installing some pre-reqs from repos."
 #apt-get update
 #apt-get upgrade
-apt-get --ignore-missing install -y build-essential libpcap-dev udhcpd tmux byobu ettercap-text-only proxychains python-dev python-pypcap subversion git nano vim libnl-utils libnl-dev ruby ruby-dev sqlite3 libsqlite3-dev libsqlite3-ruby1.9.1
+apt-get --ignore-missing install -y build-essential libpcap-dev udhcpd tmux byobu ettercap-text-only proxychains python-dev python-pypcap subversion git nano vim libnl-utils libnl-dev ruby ruby-dev sqlite3 libsqlite3-dev libsqlite3-ruby1.9.1 python-twisted
 
 echo "Downloading Hostapd-Karma"
 wget -O hostapd.tar.bz2 http://www.digininja.org/files/hostapd-1.0-karma.tar.bz2
@@ -16,7 +16,7 @@ cd hostapd-1.0-karma/hostapd/
 echo "Building"
 make hostapd
 echo "Installing"
-mv hostapd ../../../bin/hostapd
+mv hostapd ../../../bin/hostapd-karma
 cd ../../
 
 echo "Uninstalling libnl1 and replacing with libnl3"
@@ -52,8 +52,8 @@ cd ../../
 echo "Downloading airdrop2"
 git clone https://code.google.com/p/airdrop2/
 cd airdrop2
-echo "Switching to Wifiobjects"
-git checkout wifiobjects
+#echo "Switching to Wifiobjects"
+#git checkout wifiobjects
 echo "Installing airdrop"
 mv airdrop-immunizer.py ../../bin/airdrop-immunizer.py
 cd ../

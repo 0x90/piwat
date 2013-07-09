@@ -4,7 +4,7 @@ echo "Press any key..."
 read test
 
 echo "Installing some pre-reqs from repos."
-#apt-get update
+apt-get update
 #apt-get upgrade
 apt-get --ignore-missing install -y build-essential libpcap-dev udhcpd tmux byobu ettercap-text-only proxychains python-dev python-pypcap subversion git nano vim libnl-utils libnl-dev ruby ruby-dev sqlite3 libsqlite3-dev libsqlite3-ruby1.9.1 python-twisted
 
@@ -39,6 +39,8 @@ echo "Starting install"
 ./configure
 make
 make install
+echo "Symlinking proper directory for liborcon"
+ln -s /usr/local/lib/liborcon2-2.0.0.so /usr/lib/liborcon2-2.0.0.so
 echo "Finished Lorcon install, installing pyLorcon2"
 cd pylorcon2
 python setup.py install
@@ -48,6 +50,12 @@ pwd
 echo "*******************************************************************"
 
 cd ../../
+echo "Downloading py80211"
+git clone https://code.google.com/p/py80211
+cd py80211/
+python setup.py install
+echo "Finished installing py80211"
+cd ../
 
 echo "Downloading airdrop2"
 git clone https://code.google.com/p/airdrop2/
@@ -64,3 +72,4 @@ gem install bundler
 cd ../bin/beef/
 bundle install
 
+cd ../../install/

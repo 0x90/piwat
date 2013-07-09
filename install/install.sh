@@ -72,4 +72,11 @@ gem install bundler
 cd ../bin/beef/
 bundle install
 
-cd ../../install/
+echo "========================================="
+echo "          FINISHED INSTALLATION          "
+echo "========================================="
+echo "If you have issues with properly starting the software stack, then something may have changed in the delicate balance of linux repositories and the large amounts of code that blend together to make this work."
+echo "---"
+echo "If you used the install script on a fresh install and it didn't work, send your list of installed packages, your distribution release, uname -a, and hw specs to @crypt0s (twitter) or file a bug report on sourceforge"
+echo "---"
+echo "Thanks for playing."

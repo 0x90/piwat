@@ -1,5 +1,7 @@
 #!/bin/bash
 echo "This takes forever and shouldn't be interrupted.  Continue?"
+echo "It also doesn't let you know if a stage fails -- you need to find any errors. Next version will be better."
+echo ""
 echo "Press any key..."
 read test
 
@@ -9,13 +11,33 @@ apt-get update
 apt-get --ignore-missing install -y build-essential libpcap-dev udhcpd tmux byobu ettercap-text-only proxychains python-dev python-pypcap subversion git nano vim libnl-dev libssl-dev ruby ruby-dev sqlite3 libsqlite3-dev libsqlite3-ruby1.9.1 python-twisted
 
 echo "Downloading Hostapd-Karma"
-wget -O hostapd.tar.bz2 http://www.digininja.org/files/hostapd-1.0-karma.tar.bz2
-echo "Unpacking"
-tar xvf hostapd.tar.bz2
-cd hostapd-1.0-karma/hostapd/
-echo "Building"
+#DL hostapd 2.0
+wget http://hostap.epitest.fi/releases/hostapd-2.0.tar.gz
+tar xvf hostapd-2.0.tar.gz
+cd hostapd-2.0/
+
+wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-cui.patch
+wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-karma.patch
+wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-karma_cli.patch
+wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-tls_length_fix.patch
+wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-wpe_karma.patch
+wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-wpe_karma_cli.patch
+
+echo "Patching Hostapd with Pentoo patches and a compatibility fix"
+
+#There's a bad edit in the patch that breaks all the things. Gotta delete this line.
+sed '271d' hostapd-2.0-cui.patch
+
+#Apply patches
+patch -p1 < hostapd-2.0-cui.patch
+patch -p1 < hostapd-2.0-karma.patch
+patch -p1 < hostapd-2.0-tls_length_fix.patch
+patch -p1 < hostapd-2.0-wpe_karma.patch
+
+#make all the things
+cd hostapd/
+cp defconfig .config
 make hostapd
-echo "Installing"
 mv hostapd ../../../bin/hostapd-karma
 cd ../../
 

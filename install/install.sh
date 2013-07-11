@@ -25,14 +25,14 @@ wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/h
 
 echo "Patching Hostapd with Pentoo patches and a compatibility fix"
 
-#There's a bad edit in the patch that breaks all the things. Gotta delete this line.
-sed '271d' hostapd-2.0-cui.patch
-
 #Apply patches
 patch -p1 < hostapd-2.0-cui.patch
 patch -p1 < hostapd-2.0-karma.patch
 patch -p1 < hostapd-2.0-tls_length_fix.patch
 patch -p1 < hostapd-2.0-wpe_karma.patch
+
+#There's a edit in the patch that breaks all the things. Gotta delete this line.
+sed '29d' src/ap/pmksa_cache_auth.h > src/ap/pmksa_cache_auth.h
 
 #make all the things
 cd hostapd/

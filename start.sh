@@ -58,6 +58,7 @@ case $mode in
 3)
     #balls-out attack mode
     conffile='conf/hostapd.conf'
+    options='-R'
     ;;
 *)
     echo "Invalid mode selection."
@@ -130,7 +131,7 @@ echo "Started airdrop"
 #KARMA
 echo "interface=$lan"|cat - $conffile > /tmp/out && mv /tmp/out /etc/hostapd.conf
 killall hostapd-karma
-tmux new-window -tAttack:5 -n 'HostAPD' 'bin/hostapd-karma -dd /etc/hostapd.conf'
+tmux new-window -tAttack:5 -n 'HostAPD' 'bin/hostapd-karma -dd $options /etc/hostapd.conf'
 echo "Started Karma Hostapd"
 
 

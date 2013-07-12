@@ -18,10 +18,8 @@ cd hostapd-2.0/
 
 wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-cui.patch
 wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-karma.patch
-wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-karma_cli.patch
 wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-tls_length_fix.patch
 wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-wpe_karma.patch
-wget http://pentoo.googlecode.com/svn/portage/trunk/net-wireless/hostapd/files/hostapd-2.0-wpe_karma_cli.patch
 
 echo "Patching Hostapd with Pentoo patches and a compatibility fix"
 
@@ -32,7 +30,8 @@ patch -p1 < hostapd-2.0-tls_length_fix.patch
 patch -p1 < hostapd-2.0-wpe_karma.patch
 
 #There's a edit in the patch that breaks all the things. Gotta delete this line.
-sed '29d' src/ap/pmksa_cache_auth.h > src/ap/pmksa_cache_auth.h
+sed '29d' src/ap/pmksa_cache_auth.h > /tmp/out.h
+mv /tmp/out.h src/ap/pmksa_cache_auth.h
 
 #make all the things
 cd hostapd/

